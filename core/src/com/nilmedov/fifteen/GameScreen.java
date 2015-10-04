@@ -4,11 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
  * Created by Nazar on 04.10.2015.
@@ -21,6 +19,7 @@ public class GameScreen implements Screen {
 	private SpriteBatch batch;
 	private Sprite img;
 	private float diffX, diffY;
+	private boolean isObjectTouched;
 
 	public GameScreen() {
 //		camera = new OrthographicCamera();
@@ -38,6 +37,7 @@ public class GameScreen implements Screen {
 				int convertedY = SCREEN_HEIGHT - screenY;
 
 				if (img.getBoundingRectangle().contains(screenX, convertedY)) {
+					isObjectTouched = true;
 					diffX = screenX - img.getX();
 					diffY = convertedY - img.getY();
 				}
@@ -46,10 +46,16 @@ public class GameScreen implements Screen {
 			}
 
 			@Override
+			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+				isObjectTouched = false;
+				return true;
+			}
+
+			@Override
 			public boolean touchDragged(int screenX, int screenY, int pointer) {
 				int convertedY = SCREEN_HEIGHT - screenY;
 
-				if (img.getBoundingRectangle().contains(screenX, convertedY)) {
+				if (isObjectTouched) {
 					img.setPosition(screenX - diffX, convertedY - diffY);
 				}
 				System.out.println("touchDragged: " + "x: " + screenX + " y: " + convertedY);
