@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.nilmedov.fifteen.controllers.GameController;
+import com.nilmedov.fifteen.entities.Chip;
 
 /**
  * Created by Nazar on 04.10.2015.
@@ -17,9 +19,11 @@ public class GameScreen implements Screen {
 //	private OrthographicCamera camera;
 //	private FitViewport viewport;
 	private SpriteBatch batch;
-	private Sprite img;
 	private float diffX, diffY;
 	private boolean isObjectTouched;
+
+	private GameController gameController;
+	private Chip holdedChip;
 
 	public GameScreen() {
 //		camera = new OrthographicCamera();
@@ -30,16 +34,16 @@ public class GameScreen implements Screen {
 	@Override
 	public void show() {
 		batch = new SpriteBatch();
-		img = new Sprite(new Texture("badlogic.jpg"));
+		gameController = new GameController();
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 				int convertedY = SCREEN_HEIGHT - screenY;
-
-				if (img.getBoundingRectangle().contains(screenX, convertedY)) {
+				holdedChip = gameController.getChipInPostion(screenX, convertedY);
+				if (holdedChip != null) {
 					isObjectTouched = true;
-					diffX = screenX - img.getX();
-					diffY = convertedY - img.getY();
+					diffX = screenX - holdedChip.getX();
+					diffY = convertedY - holdedChip.getY();
 				}
 				System.out.println("touchDown: " + "x: " + screenX + " y: " + convertedY);
 				return true;
@@ -56,7 +60,7 @@ public class GameScreen implements Screen {
 				int convertedY = SCREEN_HEIGHT - screenY;
 
 				if (isObjectTouched) {
-					img.setPosition(screenX - diffX, convertedY - diffY);
+					holdedChip.setPosition(screenX - diffX, convertedY - diffY);
 				}
 				System.out.println("touchDragged: " + "x: " + screenX + " y: " + convertedY);
 				return true;
@@ -71,7 +75,7 @@ public class GameScreen implements Screen {
 //		camera.update();
 //		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		img.draw(batch);
+		gameController.draw(batch);
 		batch.end();
 	}
 
