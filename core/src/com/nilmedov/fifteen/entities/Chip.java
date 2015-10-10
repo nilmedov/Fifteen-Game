@@ -19,6 +19,10 @@ public class Chip extends Sprite {
 		font = AssetHelper.getInstance().getFont();
 	}
 
+	public static float getLength() {
+		return AssetHelper.getInstance().getClipTexture().getHeight();
+	}
+
 	@Override
 	public void draw(Batch batch) {
 		font.draw(batch, String.valueOf(number), getX(), getY() + getHeight() + 30);

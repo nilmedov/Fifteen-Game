@@ -4,11 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.nilmedov.fifteen.controllers.GameController;
+import com.nilmedov.fifteen.controllers.ChipController;
 import com.nilmedov.fifteen.entities.Chip;
+import com.nilmedov.fifteen.entities.Collision;
 
 /**
  * Created by Nazar on 04.10.2015.
@@ -19,10 +18,10 @@ public class GameScreen implements Screen {
 //	private OrthographicCamera camera;
 //	private FitViewport viewport;
 	private SpriteBatch batch;
+	private float prevX, prevY;
 	private float diffX, diffY;
 	private boolean isObjectTouched;
-
-	private GameController gameController;
+	private ChipController chipController;
 	private Chip holdedChip;
 
 	public GameScreen() {
@@ -34,14 +33,16 @@ public class GameScreen implements Screen {
 	@Override
 	public void show() {
 		batch = new SpriteBatch();
-		gameController = new GameController();
+		chipController = new ChipController();
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 				int convertedY = SCREEN_HEIGHT - screenY;
-				holdedChip = gameController.getChipInPostion(screenX, convertedY);
+				holdedChip = chipController.getChipInPostion(screenX, convertedY);
 				if (holdedChip != null) {
 					isObjectTouched = true;
+					prevX = holdedChip.getX();
+					prevY = holdedChip.getY();
 					diffX = screenX - holdedChip.getX();
 					diffY = convertedY - holdedChip.getY();
 				}
@@ -60,9 +61,29 @@ public class GameScreen implements Screen {
 				int convertedY = SCREEN_HEIGHT - screenY;
 
 				if (isObjectTouched) {
-					holdedChip.setPosition(screenX - diffX, convertedY - diffY);
+//					holdedChip.setPosition(screenX - diffX, convertedY - diffY);
+
+					Collision collision = GameScreen.this.chipController.getCollision(GameScreen.this.holdedChip);
+					if(GameScreen.this.prevX > (float)screenX) {
+						if(!collision.isLeft()) {
+							GameScreen.this.holdedChip.setX((float)screenX - GameScreen.this.diffX);
+						}
+					} else if(GameScreen.this.prevX < (float)screenX && !collision.isRight()) {
+						GameScreen.this.holdedChip.setX((float)screenX - GameScreen.this.diffX);
+					}
+
+					if(GameScreen.this.prevY > (float)convertedY) {
+						if(!collision.isBottom()) {
+							GameScreen.this.holdedChip.setY((float)convertedY - GameScreen.this.diffY);
+						}
+					} else if(GameScreen.this.prevY < (float)convertedY && !collision.isBottom()) {
+						GameScreen.this.holdedChip.setY((float)convertedY - GameScreen.this.diffY);
+					}
+
+					GameScreen.this.prevX = (float)screenX;
+					GameScreen.this.prevY = (float)convertedY;
 				}
-				System.out.println("touchDragged: " + "x: " + screenX + " y: " + convertedY);
+//				System.out.println("touchDragged: " + "x: " + screenX + " y: " + convertedY);
 				return true;
 			}
 		});
@@ -75,7 +96,7 @@ public class GameScreen implements Screen {
 //		camera.update();
 //		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		gameController.draw(batch);
+		chipController.draw(batch);
 		batch.end();
 	}
 
