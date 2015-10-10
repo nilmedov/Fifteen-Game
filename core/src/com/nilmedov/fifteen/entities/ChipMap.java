@@ -9,7 +9,7 @@ public class ChipMap {
 	private Rectangle[][] cells;
 
 	public ChipMap(int columns, int rows) {
-		float length = Chip.getLength();
+		float length = 120;
 		this.cells = new Rectangle[columns][rows];
 
 		for(int col = 0; col < columns; ++col) {
