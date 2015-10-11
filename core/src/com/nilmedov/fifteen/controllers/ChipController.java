@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.nilmedov.fifteen.entities.Chip;
+import com.nilmedov.fifteen.entities.ChipMap;
 import com.nilmedov.fifteen.entities.Collision;
 
 import java.util.ArrayList;
@@ -16,11 +17,16 @@ import java.util.List;
 public class ChipController {
 	private static final String TAG = ChipController.class.getSimpleName();
 	private List<Chip> chips;
+	private ChipMap chipMap;
 
 	public ChipController() {
 		chips = new ArrayList<Chip>();
 		chips.add(new Chip(1, 0, 0));
 		chips.add(new Chip(2, 120, 0));
+
+		chipMap = new ChipMap(4, 4);
+		chipMap.setChipAtCell(chips.get(0), 0, 0);
+		chipMap.setChipAtCell(chips.get(1), 3, 3);
 
 //		for(int i = 0; i < 4; ++i) {
 //			for (int j = 0; j < 4; ++j) {

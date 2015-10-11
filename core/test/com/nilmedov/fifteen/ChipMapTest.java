@@ -15,12 +15,10 @@ public class ChipMapTest {
 	@Test
 	public void testConstructor() throws Exception {
 		ChipMap chipMap = new ChipMap(4, 4);
-//		float length = Chip.getLength();
-		for (Rectangle[] cellRows: chipMap.getCells()) {
-			for (Rectangle cell : cellRows) {
-				assertNotNull(cell);
-			}
-		}
-//		assertEquals(chipMap.getCells()[0][0], new Rectangle(0, 0, ));
+		float length = 120;
+
+		assertEquals(chipMap.getCells()[0][3], new Rectangle(0, 360, length, length));
+		assertEquals(chipMap.getCells()[3][0], new Rectangle(360, 0, length, length));
+		assertEquals(chipMap.getCells()[3][3], new Rectangle(360, 360, length, length));
 	}
 }
