@@ -24,7 +24,7 @@ public class ChipController {
 		chips.add(new Chip(1, 0, 0));
 		chips.add(new Chip(2, 120, 0));
 
-		chipMap = new ChipMap(4, 4);
+		chipMap = new ChipMap(chips, 4, 4);
 		chipMap.setChipAtCell(chips.get(0), 0, 0);
 		chipMap.setChipAtCell(chips.get(1), 3, 3);
 
@@ -78,28 +78,59 @@ public class ChipController {
 			if (!chip.equals(currentChip)) {
 				Rectangle intersection = new Rectangle();
 				Intersector.intersectRectangles(chip.getBoundingRectangle(), currentChip.getBoundingRectangle(), intersection);
-				if (intersection.getHeight() > 0.0F && intersection.getWidth() > 0.0F) {
-					if(intersection.x > chip.getBoundingRectangle().x) {
+				if (intersection.getHeight() > 0 && intersection.getWidth() > 0) {
+					if (intersection.x > chip.getBoundingRectangle().x) {
 						Gdx.app.log(TAG, "collision: right");
 						collision.setRight(true);
 					}
 
-					if(intersection.y > chip.getBoundingRectangle().y) {
+					if (intersection.y > chip.getBoundingRectangle().y) {
 						Gdx.app.log(TAG, "collision: top");
 						collision.setTop(true);
 					}
 
-					if(intersection.x + intersection.width < chip.getBoundingRectangle().x + chip.getBoundingRectangle().width) {
+					if (intersection.x + intersection.width < chip.getBoundingRectangle().x + chip.getBoundingRectangle().width) {
 						Gdx.app.log(TAG, "collision: left");
 						collision.setLeft(true);
 					}
 
-					if(intersection.y + intersection.height < chip.getBoundingRectangle().y + chip.getBoundingRectangle().height) {
+					if (intersection.y + intersection.height < chip.getBoundingRectangle().y + chip.getBoundingRectangle().height) {
 						Gdx.app.log(TAG, "collision: bottom");
 						collision.setBottom(true);
 					}
 				}
 			}
+		}
+		return collision;
+	}
+
+	public Collision getChipMapBoundsCollision(Chip chip) {
+		Collision collision = new Collision();
+
+		Rectangle bound = chipMap.getBound();
+		Rectangle intersection = new Rectangle();
+		Intersector.intersectRectangles(chipMap.getBound(), chip.getBoundingRectangle(), intersection);
+
+//		Gdx.app.log(TAG, "intersection: " + intersection.toString());
+
+		if (intersection.x + chip.getWidth() > bound.getWidth()) {
+			Gdx.app.log(TAG, "Bound collision: right");
+			collision.setRight(true);
+		}
+
+		if (intersection.y + chip.getHeight() > bound.getHeight()) {
+			Gdx.app.log(TAG, "Bound collision: top");
+			collision.setTop(true);
+		}
+
+		if (intersection.x == 0) {
+			Gdx.app.log(TAG, "Bound collision: left");
+			collision.setLeft(true);
+		}
+
+		if (intersection.y == 0) {
+			Gdx.app.log(TAG, "Bound collision: bottom");
+			collision.setBottom(true);
 		}
 		return collision;
 	}

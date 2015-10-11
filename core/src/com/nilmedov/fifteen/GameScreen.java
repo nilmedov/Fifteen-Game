@@ -13,9 +13,10 @@ import com.nilmedov.fifteen.entities.Collision;
  * Created by Nazar on 04.10.2015.
  */
 public class GameScreen implements Screen {
+	private static final String TAG = GameScreen.class.getSimpleName();
 	public static final int SCREEN_WIDTH = 480;
 	public static final int SCREEN_HEIGHT = 800;
-//	private OrthographicCamera camera;
+	//	private OrthographicCamera camera;
 //	private FitViewport viewport;
 	private SpriteBatch batch;
 	private float prevX, prevY;
@@ -61,27 +62,28 @@ public class GameScreen implements Screen {
 				int convertedY = SCREEN_HEIGHT - screenY;
 
 				if (isObjectTouched) {
-//					holdedChip.setPosition(screenX - diffX, convertedY - diffY);
 
-					Collision collision = GameScreen.this.chipController.getCollision(GameScreen.this.holdedChip);
-					if(GameScreen.this.prevX > (float)screenX) {
-						if(!collision.isLeft()) {
-							GameScreen.this.holdedChip.setX((float)screenX - GameScreen.this.diffX);
+					chipController.getChipMapBoundsCollision(holdedChip);
+
+					Collision collision = chipController.getCollision(holdedChip);
+					if (prevX > screenX) {
+						if (!collision.isLeft()) {
+							holdedChip.setX(screenX - diffX);
 						}
-					} else if(GameScreen.this.prevX < (float)screenX && !collision.isRight()) {
-						GameScreen.this.holdedChip.setX((float)screenX - GameScreen.this.diffX);
+					} else if (prevX < screenX && !collision.isRight()) {
+						holdedChip.setX(screenX - diffX);
 					}
 
-					if(GameScreen.this.prevY > (float)convertedY) {
-						if(!collision.isBottom()) {
-							GameScreen.this.holdedChip.setY((float)convertedY - GameScreen.this.diffY);
+					if (prevY > convertedY) {
+						if (!collision.isBottom()) {
+							holdedChip.setY(convertedY - diffY);
 						}
-					} else if(GameScreen.this.prevY < (float)convertedY && !collision.isBottom()) {
-						GameScreen.this.holdedChip.setY((float)convertedY - GameScreen.this.diffY);
+					} else if (prevY < convertedY && !collision.isBottom()) {
+						holdedChip.setY(convertedY - diffY);
 					}
 
-					GameScreen.this.prevX = (float)screenX;
-					GameScreen.this.prevY = (float)convertedY;
+					prevX = screenX;
+					prevY = convertedY;
 				}
 //				System.out.println("touchDragged: " + "x: " + screenX + " y: " + convertedY);
 				return true;
