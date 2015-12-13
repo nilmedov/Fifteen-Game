@@ -10,22 +10,33 @@ import com.nilmedov.fifteen.utils.AssetHelper;
  */
 public class Chip extends Sprite {
 	private int number;
-	private BitmapFont font;
+	public Chip(int number) {
+		super(AssetHelper.getInstance().getClipTexture(number));
+		this.number = number;
+		setPosition(0, 0);
+	}
 
 	public Chip(int number, float x, float y) {
-		super(AssetHelper.getInstance().getClipTexture());
-		setPosition(x, y);
+		super(AssetHelper.getInstance().getClipTexture(number));
 		this.number = number;
-		font = AssetHelper.getInstance().getFont();
+		setPosition(x, y);
+	}
+
+	@Override
+	public String toString() {
+		return "Chip{" + "\n" +
+				"number=" + number + "\n" +
+				"x=" + getX() + "\n" +
+				"y=" + getY() + "\n" +
+				'}';
 	}
 
 	public static float getLength() {
-		return AssetHelper.getInstance().getClipTexture().getHeight();
+		return AssetHelper.getInstance().getClipTexture(1).getHeight();
 	}
 
 	@Override
 	public void draw(Batch batch) {
-		font.draw(batch, String.valueOf(number), getX(), getY() + getHeight() + 30);
 		super.draw(batch);
 	}
 }

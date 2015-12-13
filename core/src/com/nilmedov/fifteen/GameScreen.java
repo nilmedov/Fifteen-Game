@@ -6,8 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.nilmedov.fifteen.controllers.ChipController;
+import com.nilmedov.fifteen.entities.Cell;
 import com.nilmedov.fifteen.entities.Chip;
-import com.nilmedov.fifteen.entities.Collision;
 
 /**
  * Created by Nazar on 04.10.2015.
@@ -19,11 +19,8 @@ public class GameScreen implements Screen {
 	//	private OrthographicCamera camera;
 //	private FitViewport viewport;
 	private SpriteBatch batch;
-	private float prevX, prevY;
-	private float diffX, diffY;
-	private boolean isObjectTouched;
 	private ChipController chipController;
-	private Chip holdedChip;
+	private Cell retainedCell;
 
 	public GameScreen() {
 //		camera = new OrthographicCamera();
@@ -38,54 +35,18 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				int convertedY = SCREEN_HEIGHT - screenY;
-				holdedChip = chipController.getChipInPostion(screenX, convertedY);
-				if (holdedChip != null) {
-					isObjectTouched = true;
-					prevX = holdedChip.getX();
-					prevY = holdedChip.getY();
-					diffX = screenX - holdedChip.getX();
-					diffY = convertedY - holdedChip.getY();
-				}
-				System.out.println("touchDown: " + "x: " + screenX + " y: " + convertedY);
-				return true;
-			}
-
-			@Override
-			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-				isObjectTouched = false;
-				return true;
-			}
-
-			@Override
-			public boolean touchDragged(int screenX, int screenY, int pointer) {
-				int convertedY = SCREEN_HEIGHT - screenY;
-
-				if (isObjectTouched) {
-
-					chipController.getChipMapBoundsCollision(holdedChip);
-
-					Collision collision = chipController.getCollision(holdedChip);
-					if (prevX > screenX) {
-						if (!collision.isLeft()) {
-							holdedChip.setX(screenX - diffX);
-						}
-					} else if (prevX < screenX && !collision.isRight()) {
-						holdedChip.setX(screenX - diffX);
+				screenY = SCREEN_HEIGHT - screenY;
+				Cell cell = chipController.getCellInPosition(screenX, screenY);
+				if (cell != null) {
+					Chip chip = cell.getChip();
+					if (chip != null) {
+						retainedCell = cell;
+					} else if (retainedCell != null && isNeighboringCell(cell, retainedCell)) {
+						cell.setChip(retainedCell.getChip());
+						retainedCell.setChip(chip);
+						System.out.println("Chips swapped");
 					}
-
-					if (prevY > convertedY) {
-						if (!collision.isBottom()) {
-							holdedChip.setY(convertedY - diffY);
-						}
-					} else if (prevY < convertedY && !collision.isBottom()) {
-						holdedChip.setY(convertedY - diffY);
-					}
-
-					prevX = screenX;
-					prevY = convertedY;
 				}
-//				System.out.println("touchDragged: " + "x: " + screenX + " y: " + convertedY);
 				return true;
 			}
 		});
@@ -100,6 +61,22 @@ public class GameScreen implements Screen {
 		batch.begin();
 		chipController.draw(batch);
 		batch.end();
+	}
+
+	private boolean isNeighboringCell(Cell cell1, Cell cell2) {
+		if (cell1.getColumn() != 0 && cell1.getColumn() - 1 == cell2.getColumn() && cell1.getRow() == cell2.getRow()) {
+			return true;
+		}
+
+		if (cell1.getColumn() != 3 && cell1.getColumn() + 1 == cell2.getColumn() && cell1.getRow() == cell2.getRow()) {
+			return true;
+		}
+
+		if (cell1.getRow() != 0 && cell1.getRow() - 1 == cell2.getRow() && cell1.getColumn() == cell2.getColumn()) {
+			return true;
+		}
+
+		return cell1.getRow() != 3 && cell1.getRow() + 1 == cell2.getRow() && cell1.getColumn() == cell2.getColumn();
 	}
 
 	@Override

@@ -22,6 +22,5 @@ public class ChipMapTest {
 		assertEquals(chipMap.getCells()[3][0], new Rectangle(length * 3, 0, length, length));
 		assertEquals(chipMap.getCells()[3][3], new Rectangle(length * 3, length * 3, length, length));
 
-		assertEquals(chipMap.getBound(), new Rectangle(0, 0, length * 4, length * 4));
 	}
 }
