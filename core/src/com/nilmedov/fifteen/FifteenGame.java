@@ -6,6 +6,6 @@ public class FifteenGame extends Game {
 
 	@Override
 	public void create () {
-		setScreen(new GameScreen());
+		setScreen(new com.nilmedov.fifteen.screens.GameScreen(this));
 	}
 }

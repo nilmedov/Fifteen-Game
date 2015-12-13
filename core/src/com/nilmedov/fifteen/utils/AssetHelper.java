@@ -15,10 +15,10 @@ public class AssetHelper implements Disposable, AssetErrorListener {
 	public static final String TAG = AssetHelper.class.getSimpleName();
 	public static final String
 			CLIP_TEXTURE = "textures/clip_%d.png",
+			BACKGROUND_TEXTURE = "textures/ui/game_background.png",
 			FONT = "fonts/impact-40.fnt";
 
 	private AssetManager assetManager;
-	private Texture clipTexture;
 	private BitmapFont font;
 
 	private static AssetHelper instance;
@@ -29,6 +29,7 @@ public class AssetHelper implements Disposable, AssetErrorListener {
 		for (int i = 1; i < 16; i++) {
 			assetManager.load(String.format(CLIP_TEXTURE, i), Texture.class);
 		}
+		assetManager.load(BACKGROUND_TEXTURE, Texture.class);
 		assetManager.load(FONT, BitmapFont.class);
 		assetManager.finishLoading();
 
@@ -48,6 +49,10 @@ public class AssetHelper implements Disposable, AssetErrorListener {
 
 	public Texture getClipTexture(int number) {
 		return assetManager.get(String.format(CLIP_TEXTURE, number), Texture.class);
+	}
+
+	public Texture getBackgroundTexture() {
+		return assetManager.get(BACKGROUND_TEXTURE, Texture.class);
 	}
 
 	@Override

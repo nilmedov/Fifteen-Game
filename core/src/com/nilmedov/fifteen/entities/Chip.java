@@ -1,7 +1,6 @@
 package com.nilmedov.fifteen.entities;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.nilmedov.fifteen.utils.AssetHelper;
 
@@ -38,5 +37,9 @@ public class Chip extends Sprite {
 	@Override
 	public void draw(Batch batch) {
 		super.draw(batch);
+	}
+
+	public int getNumber() {
+		return number;
 	}
 }
