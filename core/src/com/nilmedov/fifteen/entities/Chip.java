@@ -9,16 +9,11 @@ import com.nilmedov.fifteen.utils.AssetHelper;
  */
 public class Chip extends Sprite {
 	private int number;
+
 	public Chip(int number) {
 		super(AssetHelper.getInstance().getClipTexture(number));
 		this.number = number;
 		setPosition(0, 0);
-	}
-
-	public Chip(int number, float x, float y) {
-		super(AssetHelper.getInstance().getClipTexture(number));
-		this.number = number;
-		setPosition(x, y);
 	}
 
 	@Override

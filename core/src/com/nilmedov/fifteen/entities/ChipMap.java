@@ -1,7 +1,5 @@
 package com.nilmedov.fifteen.entities;
 
-import com.badlogic.gdx.math.Rectangle;
-
 import java.util.Iterator;
 import java.util.List;
 
